@@ -270,6 +270,7 @@
 
   <xs:simpleType name="vendorType">
     <xs:restriction base="xs:string">
+      <xs:enumeration value="Arcus"/>
       <xs:enumeration value="GE"/>
       <xs:enumeration value="Utilitech"/>
       <xs:enumeration value="Everspring"/>
@@ -318,6 +319,7 @@
       <xs:enumeration value="Google"/>
       <xs:enumeration value="Amazon"/>
       <xs:enumeration value="Lux"/>
+      <xs:enumeration value="Ring" />
     </xs:restriction>
   </xs:simpleType>
 

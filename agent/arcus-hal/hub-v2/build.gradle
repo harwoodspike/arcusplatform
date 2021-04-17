@@ -16,6 +16,8 @@
 apply from: file("${rootDir}/gradle/subproject.gradle")
 apply from: file("${rootDir}/gradle/release.gradle")
 
+apply plugin: 'application'
+
 dependencies {
    compile project(":agent:arcus-hal:arcus-hal-api")
    compile project(":agent:arcus-hal:arcus-hal-common")
@@ -29,11 +31,32 @@ dependencies {
    compile project(':common:arcus-common')
    compile project(':common:arcus-model')
    compile project(':common:arcus-model:platform-messages')
+
+   runtime project(":agent:arcus-agent")
+   runtime project(":agent:arcus-hal:arcus-hal-hub-v2")
 }
 
-task run() {
-   group "Application"
+mainClassName = 'com.iris.agent.IrisAgent'
+
+run.dependsOn "run-hub-v2"
+
+// Run the agent. This feels like the wrong place to put this, but the original run task references run-hub-v2 which wasn't defined anywhere.
+task('run-hub-v2', type:JavaExec) {
    description "Runs an Iris Agent using the arcus-hal-hub-v2 settings."
-   dependsOn "run-hub-v2"
+   classpath = files("$projectDir/src/dist/conf") + sourceSets.main.runtimeClasspath
+   group "Application"
+   main = 'com.iris.agent.IrisAgent'
+   args '~/.hub-simulated/' // Store files in ~/.hub-simulated
+   jvmArgs "-Dlogback.configurationFile=${rootDir}/agent/arcus-agent/src/dist/main/conf/logback.xml"
 }
 
+jar {
+   manifest {
+      attributes(
+              'Implementation-Title': project.name,
+              'Implementation-Version': project.version,
+              'Implementation-Vendor': "Arcus Smart Home",
+              'Created': buildTime
+      )
+   }
+}

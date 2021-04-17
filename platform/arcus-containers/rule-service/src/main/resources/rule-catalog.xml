@@ -655,6 +655,46 @@
       </template>
 
 
+        <template id="tq29nhs" keywords="scene" tags="scene,pres"
+                  added="2019-07-24T00:00:00" modified="2019-07-24T00:00:00"
+                  name="Change thermostat fan according to temperature condition"
+                  description="Turn on or off thermostat fan depending on temperature conditionss."
+                  extra="Check with your HVAC expert to ensure proper airflow through your home."
+                  premium="false">
+            <populations>
+                <population name="general" /> <population name="qa" /> <population name="beta" />
+            </populations>
+            <categories>
+                <category name="Climate" />
+            </categories>
+            <description>When ${device} temperature goes ${above or below} ${value}, then set ${therm} to ${level}.</description>
+            <conditions>
+                <attribute-value-threshold attribute="temp:temperature" source="${device}" threshold="${value}" trigger-when="${above or below}" sensitivity="1" />
+            </conditions>
+            <actions>
+                <device-query var="address" query="base:address == '${therm}' and therm:fanmode != '${level}'">
+                    <set-attribute to="${address}" name="therm:fanmode" value="${level}" />
+                </device-query>
+            </actions>
+            <selectors>
+                <selector type="device" name="device" query="base:caps contains 'temp'" />
+                <selector type="constant" name="above or below">
+                    <options>
+                        <option label="below" value="BELOW" />
+                        <option label="above" value="ABOVE" />
+                    </options>
+                </selector>
+                <selector type="device" name="therm" query="base:caps contains 'therm'" />
+                <selector type="constant" name="level">
+                    <options>
+                        <option label="AUTO" value="0" />
+                        <option label="ON" value="1" />
+                    </options>
+                </selector>
+                <selector type="temperature" name="value" min="20" max="105" increment="1" />
+            </selectors>
+        </template>
+
 		<template id="0b6ff3" keywords="mot" tags="mot,vent"
          added="2015-08-11T00:00:00" modified="2015-08-11T00:00:00"
          name="Cool Whichever Room I am In"
@@ -2775,6 +2815,54 @@
                   <option label="for 6 hours"   value="21600" />
                   <option label="for 7 hours"   value="25200" />
                   <option label="for 8 hours"   value="28800" />
+               </options>
+            </selector>
+         </selectors>
+      </template>
+
+      <template id="2ac31b" keywords="mot" tags="mot,swit"
+                added="2019-10-11T15:02:00" modified="2020-04-15T22:02:00"
+                name="Motion Detected, Change Dimmer"
+                description="Turn on a dimmer to a predetermined value when something moves."
+                premium="false">
+         <populations>
+            <population name="general"/>
+            <population name="qa"/>
+            <population name="beta"/>
+         </populations>
+         <categories>
+            <category name="Lights &amp; Switches"/>
+         </categories>
+         <description>When the ${motion} detects motion, then turn the ${dimmer} to ${value}.</description>
+         <satisfiable-if>
+            <satisfiable query="base:caps contains 'dim'"/>
+         </satisfiable-if>
+         <conditions>
+            <attribute-value-change attribute="mot:motion" new="DETECTED" query="base:address == '${motion}'"/>
+         </conditions>
+         <actions>
+            <device-query var="address" query="base:address == '${dimmer}' and swit:state != 'ON' and dim:brightness != '${value}'">
+               <set-attribute to="${address}" name="dim:brightness" value="${value}"/>
+            </device-query>
+             <device-query var="address" query="base:address == '${dimmer}' and swit:state != 'ON' and dim:brightness == '${value}'">
+                 <set-attribute to="${address}" name="swit:state" value="ON"/>
+             </device-query>
+         </actions>
+         <selectors>
+            <selector type="device" name="motion" query="base:caps contains 'mot'"/>
+            <selector type="device" name="dimmer" query="base:caps contains 'dim'"/>
+            <selector type="constant" name="value">
+               <options>
+                  <option label="10%" value="10" />
+                  <option label="20%" value="20" />
+                  <option label="30%" value="30" />
+                  <option label="40%" value="40" />
+                  <option label="50%" value="50" />
+                  <option label="60%" value="60" />
+                  <option label="70%" value="70" />
+                  <option label="80%" value="80" />
+                  <option label="90%" value="90" />
+                  <option label="100%" value="100" />
                </options>
             </selector>
          </selectors>

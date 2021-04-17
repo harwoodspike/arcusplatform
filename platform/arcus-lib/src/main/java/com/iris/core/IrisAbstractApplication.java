@@ -15,6 +15,7 @@
  */
 package com.iris.core;
 
+import java.security.Security;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -153,6 +154,9 @@ public abstract class IrisAbstractApplication {
             }
          }));
 
+         // XXX: is this the right place?
+         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+
          // If a security manager is present then initialize it
          List<? extends SecurityManager> secManager = ServiceLocator.getInstancesOf(SecurityManager.class);
          if (secManager != null && !secManager.isEmpty()) {
@@ -177,6 +181,11 @@ public abstract class IrisAbstractApplication {
                   app.getApplicationVersion(),
                   app.getApplicationDir()
             );
+
+            if (app.getApplicationName().equals(IrisApplicationModule.DEFAULT_APPLICATION_NAME)) {
+               logger.error("Application cannot start without a name");
+               System.exit(1);
+            }
             StartupListener.publishStarted();
             app.start();
          }

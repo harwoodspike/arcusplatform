@@ -64,10 +64,10 @@ allprojects {
 subprojects {
    apply from: file("${rootDir}/gradle/subproject.gradle")
 
-   group = 'com.iris'
+   group = 'com.arcussmarthome'
    version = rootProject.version
-   sourceCompatibility = '1.7'
-   targetCompatibility = '1.7'
+   sourceCompatibility = '1.8'
+   targetCompatibility = '1.8'
 
    // Shared manifest for all jar files
    ext.sharedManifest = manifest {

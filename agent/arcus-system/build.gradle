@@ -34,8 +34,10 @@ dependencies {
    compile libraries.httpMime
    compile libraries.guava
    compile libraries.logback
-   
+   compile libraries.junit
    compile libraries.kxml2
+   compile libraries.bouncycastle
+   compile libraries.bouncycastle_pki
 
    compile netty_handler
    compile netty_codec_http
